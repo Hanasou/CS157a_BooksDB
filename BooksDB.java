@@ -8,7 +8,8 @@ public class BooksDB {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("Connecting");
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/books?createDatabaseIfNotExist=true", "root", "eraser");
+			//Add your DB username and password into the second and third fields
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/books?createDatabaseIfNotExist=true", "", "");
 			
 			System.out.println("Creating Books Database");
 			stmt = con.createStatement();
