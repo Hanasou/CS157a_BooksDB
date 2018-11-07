@@ -9,7 +9,7 @@ public class BooksDB {
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println("Connecting");
 			//Add your DB username and password into the second and third fields
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/books?createDatabaseIfNotExist=true", "", "");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/books?createDatabaseIfNotExist=true", "root", "eraser");
 			
 			System.out.println("Creating Books Database");
 			stmt = con.createStatement();
@@ -23,16 +23,33 @@ public class BooksDB {
 			System.out.println("Creating tables");
 			con.setAutoCommit(false);
 			String authorsTable = "CREATE TABLE IF NOT EXISTS authors (authorID INTEGER NOT NULL AUTO_INCREMENT, "
-					+ "firstName CHAR(20), "
-					+ "lastName CHAR(20), "
+					+ "publisherName CHAR(100), "
 					+ "PRIMARY KEY (authorID))";
 			stmt.addBatch(authorsTable);
+			String publishersTable = "CREATE TABLE IF NOT EXISTS publishers (publisherID INTEGER NOT NULL AUTO_INCREMENT, "
+					+ "firstName CHAR(20), "
+					+ "lastName CHAR(20), "
+					+ "PRIMARY KEY (publisherID))";
+			stmt.addBatch(publishersTable);
+			String titlesTable = "CREATE TABLE IF NOT EXISTS titles (ISBN CHAR(10) NOT NULL,"
+					+ "title VARCHAR(500),"
+					+ "editionNumber INTEGER,"
+					+ "year CHAR(4),"
+					+ "publisherID INTEGER,"
+					+ "price DECIMAL(8,2),"
+					+ "PRIMARY KEY (ISBN),"
+					+ "FOREIGN KEY (publisherID) REFERENCES publishers (publisherID))";
+			stmt.addBatch(titlesTable);
 			String authorISBNTable = "CREATE TABLE IF NOT EXISTS authorISBN (authorID INTEGER NOT NULL AUTO_INCREMENT,"
 					+ "isbn CHAR(10),"
-					+ "FOREIGN KEY (authorID) REFERENCES authors(authorID))";
+					+ "FOREIGN KEY (ISBN) REFERENCES titles (ISBN),"
+					+ "FOREIGN KEY (authorID) REFERENCES authors (authorID))";
 			stmt.addBatch(authorISBNTable);
 			int[] count = stmt.executeBatch();
 			con.commit();
+			System.out.println("Tables created");
+			
+			//TODO: Insert records and everything else
 		}
 		catch (Exception e) {
 			e.printStackTrace();
