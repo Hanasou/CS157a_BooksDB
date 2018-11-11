@@ -23,25 +23,25 @@ public class BooksDB {
 			System.out.println("Creating tables");
 			con.setAutoCommit(false);
 			String authorsTable = "CREATE TABLE IF NOT EXISTS authors (authorID INTEGER NOT NULL AUTO_INCREMENT, "
-					+ "publisherName CHAR(100), "
+					+ "firstName CHAR(20) NOT NULL,"
+					+ "lastName CHAR(20) NOT NULL, "
 					+ "PRIMARY KEY (authorID))";
 			stmt.addBatch(authorsTable);
 			String publishersTable = "CREATE TABLE IF NOT EXISTS publishers (publisherID INTEGER NOT NULL AUTO_INCREMENT, "
-					+ "firstName CHAR(20), "
-					+ "lastName CHAR(20), "
+					+ "publisherName CHAR(100) NOT NULL, "
 					+ "PRIMARY KEY (publisherID))";
 			stmt.addBatch(publishersTable);
 			String titlesTable = "CREATE TABLE IF NOT EXISTS titles (ISBN CHAR(10) NOT NULL,"
-					+ "title VARCHAR(500),"
-					+ "editionNumber INTEGER,"
-					+ "year CHAR(4),"
-					+ "publisherID INTEGER,"
-					+ "price DECIMAL(8,2),"
+					+ "title VARCHAR(500) NOT NULL,"
+					+ "editionNumber INTEGER NOT NULL,"
+					+ "year CHAR(4) NOT NULL,"
+					+ "publisherID INTEGER NOT NULL,"
+					+ "price DECIMAL(8,2) NOT NULL,"
 					+ "PRIMARY KEY (ISBN),"
 					+ "FOREIGN KEY (publisherID) REFERENCES publishers (publisherID))";
 			stmt.addBatch(titlesTable);
 			String authorISBNTable = "CREATE TABLE IF NOT EXISTS authorISBN (authorID INTEGER NOT NULL AUTO_INCREMENT,"
-					+ "isbn CHAR(10),"
+					+ "isbn CHAR(10) NOT NULL,"
 					+ "FOREIGN KEY (ISBN) REFERENCES titles (ISBN),"
 					+ "FOREIGN KEY (authorID) REFERENCES authors (authorID))";
 			stmt.addBatch(authorISBNTable);
@@ -50,6 +50,29 @@ public class BooksDB {
 			System.out.println("Tables created");
 			
 			//TODO: Insert records and everything else
+			System.out.println("Inserting Records");
+			String insertAuthors = "INSERT INTO authors(firstName, lastName)"
+					+ "VALUES ('John', 'Doe'),"
+					+ "('Michael', 'Faraday'),"
+					+ "('Alan', 'Turing'),"
+					+ "('Door', 'Kicker'),"
+					+ "('James', 'Watson'),"
+					+ "('Sherlock', 'Holmes'),"
+					+ "('Real', 'Name'),"
+					+ "('Todd', 'Howard'),"
+					+ "('Gabe', 'Newell'),"
+					+ "('Fyodor', 'Dostoyevsky'),"
+					+ "('George', 'Orwell'),"
+					+ "('Ernest', 'Hemingway'),"
+					+ "('Neil', 'Gaiman'),"
+					+ "('Charles', 'Dickens'),"
+					+ "('John', 'Tolkien')";
+			stmt.addBatch(insertAuthors);
+			String insertPublishers = "";
+			String insertTitles = "";
+			String insertAuthorISBN = "";
+			int[] count2 = stmt.executeBatch();
+			con.commit();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -62,11 +85,7 @@ public class BooksDB {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			try {
-				stmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			System.out.println("Finished");
 		}
 	}
 }
